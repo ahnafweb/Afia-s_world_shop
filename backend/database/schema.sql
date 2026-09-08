@@ -1,0 +1,50 @@
+CREATE TABLE IF NOT EXISTS users (
+ id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL,
+ email TEXT NOT NULL UNIQUE COLLATE NOCASE, password_hash TEXT NOT NULL,
+ role TEXT NOT NULL DEFAULT 'customer' CHECK(role IN ('customer','admin')),
+ email_verified INTEGER NOT NULL DEFAULT 0 CHECK(email_verified IN (0,1)),
+ verification_code_hash TEXT DEFAULT NULL,
+ verification_expires_at INTEGER DEFAULT NULL,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS categories (
+ id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, slug TEXT NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS products (
+ id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE,
+ description TEXT DEFAULT '', category_id INTEGER NOT NULL, price INTEGER NOT NULL CHECK(price>=0),
+ stock INTEGER NOT NULL DEFAULT 0 CHECK(stock>=0), image TEXT DEFAULT '', featured INTEGER NOT NULL DEFAULT 0,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE RESTRICT
+);
+CREATE TABLE IF NOT EXISTS orders (
+ id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL,
+ status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','confirmed','processing','shipped','delivered','cancelled')),
+ total INTEGER NOT NULL CHECK(total>=0), customer_name TEXT NOT NULL, phone TEXT NOT NULL,
+ address TEXT NOT NULL, notes TEXT DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE RESTRICT
+);
+CREATE TABLE IF NOT EXISTS order_items (
+ id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER NOT NULL, product_id INTEGER NOT NULL,
+ product_name TEXT NOT NULL, price INTEGER NOT NULL, quantity INTEGER NOT NULL CHECK(quantity>0),
+ FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE,
+ FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
+
+
+CREATE TABLE IF NOT EXISTS reviews (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ product_id INTEGER NOT NULL,
+ user_id INTEGER NOT NULL,
+ rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+ title TEXT DEFAULT '',
+ comment TEXT NOT NULL,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE(product_id, user_id),
+ FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+ FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_reviews_product ON reviews(product_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_user ON reviews(user_id);

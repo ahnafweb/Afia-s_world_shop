@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: afias-world-shop
+    runtime: node
+    buildCommand: cd backend && npm ci
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@afiasworld.local
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: OTP_EXPIRES_MINUTES
+        value: "10"

@@ -1,0 +1,13 @@
+{
+  "name": "afia-world-shop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:backend": "npm --prefix backend ci",
+    "start": "npm --prefix backend start",
+    "test": "npm --prefix backend test"
+  },
+  "engines": {
+    "node": ">=22 <25"
+  }
+}

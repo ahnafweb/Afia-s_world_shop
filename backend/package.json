@@ -1,0 +1,37 @@
+{
+  "name": "afia-world-shop-backend",
+  "version": "1.2.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "mocha tests/*.test.js",
+    "prestart": "node scripts/ensure-native-db.js",
+    "predev": "node scripts/ensure-native-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.0",
+    "multer": "^2.3.0",
+    "nodemailer": "^7.0.6",
+    "resend": "^6.26.0"
+  },
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "mocha": "^12.0.0",
+    "supertest": "^7.2.2"
+  },
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true
+  }
+}
